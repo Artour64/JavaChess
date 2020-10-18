@@ -1,0 +1,102 @@
+
+public class AI2 {
+  
+  public AI2() { 
+    
+  }
+  
+  public static boolean forceWin(QuickChess game,int depth,int player){
+    int win=game.win();
+    if(win!=2){
+      if (win==player){
+        return true;
+      }
+      return false;
+    }
+    if(depth>0){
+      if(game.turn==player){
+        Move[] moves=game.getMovesLegal();
+        Move[] filtered=null;
+        QuickChess simGame=null;
+        int index=0;
+        for(int d=0;d<depth;d++){
+          if(d%2==0){
+            for(int c=0;c<moves.length;c++){
+              simGame=new QuickChess(game);
+              simGame.move(moves[c]);
+              if(forceWin(simGame,d,player)){
+                return true;
+              }
+            }
+          }else{
+            filtered=new Move[moves.length];
+            for(int c=0;c<moves.length;c++){
+              simGame=new QuickChess(game);
+              simGame.move(moves[c]);
+              if(!forceWin(simGame,d,(player+1)%2)){//change to force draw?
+                filtered[index]=moves[c];
+                index++;
+              }
+            }
+            if(index<moves.length){
+              if(index==0){
+                return false;
+              }
+              moves=new Move[index];
+              for(int c=0;c<index;c++){
+                moves[c]=filtered[c];
+              }
+              index=0;
+            }
+          }
+        }
+        return false;
+      }//else if(player!=game.turn)
+      Move[] moves=game.getMovesLegal();
+      Move[] filtered=null;
+      QuickChess simGame=null;
+      int index=0;
+      for(int d=0;d<depth;d++){
+        if(d%2==0){
+          for(int c=0;c<moves.length;c++){
+            simGame=new QuickChess(game);
+            simGame.move(moves[c]);
+            if(forceWin(simGame,d,game.turn)){//change to force draw?
+              return false;
+            }
+          }
+        }else{
+          filtered=new Move[moves.length];
+          for(int c=0;c<moves.length;c++){
+            simGame=new QuickChess(game);
+            simGame.move(moves[c]);
+            if(!forceWin(simGame,d,player)){
+              filtered[index]=moves[c];
+              index++;
+            }
+          }
+          if(index<moves.length){
+            if(index==0){
+              return true;
+            }
+            moves=new Move[index];
+            for(int c=0;c<index;c++){
+              moves[c]=filtered[c];
+            }
+            index=0;
+          }
+        }
+      }
+      //return true;//unreachable?//remove(same as change to false)?
+    }
+    return false;
+  }
+  
+  public static Move chooseMove(QuickChess game,int depth){
+    return null;
+  }
+  
+  public static void main(String[] args) { 
+    
+  }
+}
